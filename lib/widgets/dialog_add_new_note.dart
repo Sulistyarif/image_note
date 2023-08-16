@@ -1,4 +1,5 @@
-import 'dart:developer';
+import 'dart:developer' as dev;
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,8 @@ class DialogAddNewNote extends StatefulWidget {
 }
 
 class _DialogAddNewNoteState extends State<DialogAddNewNote> {
-  TextEditingController controllerTitle = TextEditingController();
-  TextEditingController controllerDescription = TextEditingController();
+  TextEditingController controllerTitle = TextEditingController(text: '');
+  TextEditingController controllerDescription = TextEditingController(text: '');
   late DropzoneViewController controllerDropzone;
   bool isHoverItem = false;
   List<PlatformFile> imageList = [];
@@ -45,10 +46,60 @@ class _DialogAddNewNoteState extends State<DialogAddNewNote> {
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
         child: ListView(
           children: [
+            Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(
+                    Icons.edit_note_rounded,
+                    size: 40,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Add New Note',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Drag and drop an image or paste it from your clipboard.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: const Icon(
+                    Icons.clear,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
             const Text(
               'Images',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
+            const SizedBox(height: 2),
             Container(
               decoration: BoxDecoration(
                 color: isHoverItem ? Colors.green[100] : Colors.blue[100],
@@ -62,7 +113,7 @@ class _DialogAddNewNoteState extends State<DialogAddNewNote> {
                     cursor: CursorType.grab,
                     onCreated: (DropzoneViewController ctrl) =>
                         controllerDropzone = ctrl,
-                    onError: (String? ev) => log('Error: $ev'),
+                    onError: (String? ev) => dev.log('Error: $ev'),
                     onHover: () {
                       setState(() {
                         isHoverItem = true;
@@ -104,11 +155,14 @@ class _DialogAddNewNoteState extends State<DialogAddNewNote> {
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.only(right: 10),
-                            child: Image.memory(
-                              imageList[index].bytes!,
-                              height: 100,
-                              width: 100,
-                              fit: BoxFit.cover,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: Image.memory(
+                                imageList[index].bytes!,
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         },
@@ -151,12 +205,17 @@ class _DialogAddNewNoteState extends State<DialogAddNewNote> {
                 hintText: "Masukkan deskripsi",
                 fillColor: Colors.white70,
               ),
+              minLines: 5,
+              maxLines: 12,
               controller: controllerDescription,
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
+                var rnd = Random();
+                int randomNumber = rnd.nextInt(100);
                 noteController.noteList.add(Note(
+                  index: randomNumber,
                   description: controllerDescription.text,
                   imageList: imageList,
                   isDone: false,

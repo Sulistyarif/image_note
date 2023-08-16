@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_note/controller/note_controller.dart';
 import 'package:image_note/widgets/dialog_add_new_note.dart';
+import 'package:image_note/widgets/item_note.dart';
 import 'package:pasteboard/pasteboard.dart';
 
 class MainMenuPage extends StatefulWidget {
@@ -112,32 +114,24 @@ class _MainMenuPageState extends State<MainMenuPage> {
                               width: 100,
                               fit: BoxFit.cover,
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                     ),
-                    const Text(
-                      'My Note',
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Text(
+                      'Image Note',
+                      style: GoogleFonts.getFont('Pacifico', fontSize: 50),
                     ),
+                    Text(
+                      'note your image easyly',
+                      style: GoogleFonts.getFont('Varela',
+                          fontSize: 14, color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 10),
                     Obx(
                       () {
                         return ListView.builder(
                           itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                Text(noteController.noteList[index].title ??
-                                    '-'),
-                                Image.memory(
-                                  noteController
-                                      .noteList[index].imageList![0].bytes!,
-                                  height: 100,
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                )
-                              ],
-                            );
+                            return ItemNote(
+                                item: noteController.noteList[index]);
                           },
                           itemCount: noteController.noteList.length,
                           shrinkWrap: true,
