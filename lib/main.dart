@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:image_note/controller/note_controller.dart';
 import 'package:image_note/screens/main_menu_page.dart';
 
